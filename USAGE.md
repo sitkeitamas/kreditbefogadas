@@ -105,3 +105,5 @@ A verzió a **`VERSION`** fájlban van (egy sor, pl. `2.0.1`), és a weboldal te
 - **z** nő: minden olyan check-innél, amikor valamit beteszünk (nem csak javítás).
 - **y** nő: új funkció (pl. új szűrő, export).
 - **x** nő: nagy áttörés (pl. Excel feltöltés a böngészőből).
+
+**Új verzió kirakása:** futtasd **`./release.sh 2.0.3`** (a kívánt verzióval). Ez frissíti a VERSION fájlt, **deployol a NAS-ra** (és újraindítja a konténert), majd commitol, tageel és pushol a mainre.
