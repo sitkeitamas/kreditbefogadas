@@ -11,6 +11,7 @@ services:
     volumes:
       - /volume1/docker/kreditbefogadas/data:/app/data:ro
       - /volume1/docker/kreditbefogadas/server-working.js:/app/server-working.js:ro
+      - /volume1/docker/kreditbefogadas/VERSION:/app/VERSION:ro
     environment:
       NODE_ENV: production
       PORT: 5000

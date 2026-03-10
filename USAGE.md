@@ -76,7 +76,7 @@ docker compose -f docker-compose.simple.yml up -d
 docker restart kreditbefogadas-kredit-app-1
 ```
 
-3. Böngészőben: a NAS címed + port (pl. `http://dsm.sitkeitamas.hu:5111`). A konténer a **`/app/data/kredit_data.json`**-t olvassa (a host **`data/`** mappája).
+3. Böngészőben: **https://kredit.sitkeitamas.hu** (reverse proxyval HTTPS-re, port nélkül). A konténer a **`/app/data/kredit_data.json`**-t olvassa (a host **`data/`** mappája).
 
 ---
 
@@ -93,4 +93,15 @@ docker restart kreditbefogadas-kredit-app-1
 1. **`data/`** = az XLS forrás és a **`kredit_data.json`** (megjegyzésekkel kiegészítve) helye – build és Docker futtatásakor is.
 2. Új Excel → bemásolás a **`data/`**-ba → **`node upload_data.js`** → frissül a **`data/kredit_data.json`**.
 3. Lokális teszt: **`PORT=5050 KREDIT_DATA_PATH="$(pwd)/data/kredit_data.json" node server-working.js`**, böngésző: `http://localhost:5050`.
-4. NAS: **`server-working.js`** + **`data/`** (XLS + **`kredit_data.json`**) feltöltése → **`docker restart ...`** → ellenőrzés a NAS URL-en.
+4. NAS: **`server-working.js`** + **`data/`** (XLS + **`kredit_data.json`**) feltöltése → **`docker restart ...`** → ellenőrzés: **https://kredit.sitkeitamas.hu**
+
+---
+
+## 7. Verziószám (x.y.z)
+
+A verzió a **`VERSION`** fájlban van (egy sor, pl. `2.0.1`), és a weboldal tetején jelenik meg („Kreditbefogadás v2.0.1”).
+
+**Növelés check-in/kiadás előtt:**
+- **z** nő: minden olyan check-innél, amikor valamit beteszünk (nem csak javítás).
+- **y** nő: új funkció (pl. új szűrő, export).
+- **x** nő: nagy áttörés (pl. Excel feltöltés a böngészőből).

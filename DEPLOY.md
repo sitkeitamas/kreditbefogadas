@@ -2,6 +2,8 @@
 
 A **`deploy-nas.sh`** a repó gyökerében a Macről feltölti a fájlokat a NAS-ra és restartolja a konténert.
 
+**Megjegyzés:** A script csak azon a gépen futtatható, ahol a NAS-ra van SSH hozzáférés (kulcs a NAS `authorized_keys`-ében). Ha másokkal megosztod a repót, ők nem tudnak ezzel deployolni, csak lokálisan futtatni a projektet (a deploy a te környezetedre van kihegyezve).
+
 **Futtatás** (a projekt mappájából):
 
 ```bash
@@ -16,3 +18,5 @@ cd /Users/sitkeitamas/Documents/GitHub/kreditbefogadas
 ```bash
 NAS_HOST=dsm.sitkeitamas.hu NAS_USER=sitkeitamas NAS_PATH=/volume1/docker/kreditbefogadas ./deploy-nas.sh
 ```
+
+**Elérés internetről:** **https://kredit.sitkeitamas.hu** – a szolgáltatás reverse proxyval van kitéve HTTPS-re, port nélkül. A belső 5111-es port csak a proxy számára releváns.

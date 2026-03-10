@@ -5,6 +5,14 @@ const path = require('path');
 
 const PORT = Number(process.env.PORT) || 5000;
 
+let VERSION = '0.0.0';
+try {
+  const vPath = path.join(__dirname, 'VERSION');
+  if (fs.existsSync(vPath)) {
+    VERSION = fs.readFileSync(vPath, 'utf8').trim() || VERSION;
+  }
+} catch (_) {}
+
 // Try to load full dataset from JSON file (e.g. /app/data/kredit_data.json in Docker, ./kredit_data.json locally)
 let records = [];
 try {
@@ -68,11 +76,12 @@ const server = http.createServer((req, res) => {
     th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #ddd}
     th{background:#f5f5f5;font-size:0.9rem}
     .comment-cell{max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#555;font-size:0.85rem}
+    .app-version{font-size:0.75rem;color:#888;font-weight:normal;margin-left:0.5em}
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Kreditbefogadás</h1>
+    <h1>Kreditbefogadás <span class="app-version">v${VERSION}</span></h1>
     <div class="stats">
       <h3>Statisztika</h3>
       <p>Összes rekord: <span id="totalRecords"></span></p>
