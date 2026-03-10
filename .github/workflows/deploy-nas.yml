@@ -1,0 +1,46 @@
+# Deploy to NAS only when a new version tag is pushed (e.g. v2.0, v3.0).
+# Does NOT run on every push – only on: push tags matching "v*"
+name: Deploy to NAS on tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    name: Deploy to NAS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.NAS_SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.NAS_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Copy files to NAS
+        env:
+          NAS_DEPLOY_PATH: ${{ secrets.NAS_DEPLOY_PATH }}
+        run: |
+          NAS_HOST="${{ secrets.NAS_HOST }}"
+          NAS_USER="${{ secrets.NAS_USER }}"
+          NAS_PATH="${NAS_DEPLOY_PATH:-/volume1/docker/kreditbefogadas}"
+          KEY="$HOME/.ssh/deploy_key"
+          ssh -i "$KEY" -o StrictHostKeyChecking=accept-new "${NAS_USER}@${NAS_HOST}" "mkdir -p ${NAS_PATH}/data"
+          scp -i "$KEY" -o StrictHostKeyChecking=accept-new server-working.js "${NAS_USER}@${NAS_HOST}:${NAS_PATH}/"
+          scp -i "$KEY" -o StrictHostKeyChecking=accept-new data/kredit_data.json "${NAS_USER}@${NAS_HOST}:${NAS_PATH}/data/"
+          # optional: upload Excel if present
+          if [ -f data/2025_creditAccList.xlsx ]; then
+            scp -i "$KEY" -o StrictHostKeyChecking=accept-new data/2025_creditAccList.xlsx "${NAS_USER}@${NAS_HOST}:${NAS_PATH}/data/" || true
+          fi
+
+      - name: Restart container on NAS
+        run: |
+          NAS_HOST="${{ secrets.NAS_HOST }}"
+          NAS_USER="${{ secrets.NAS_USER }}"
+          KEY="$HOME/.ssh/deploy_key"
+          ssh -i "$KEY" "${NAS_USER}@${NAS_HOST}" "docker restart kreditbefogadas-kredit-app-1"
